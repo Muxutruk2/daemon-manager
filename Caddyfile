@@ -1,0 +1,21 @@
+{
+    debug
+}
+
+:8080
+route {
+    handle_path /static/* {
+        root * ./static
+        file_server
+    }
+
+    handle_path /api/* {
+        reverse_proxy 127.0.0.1:3000
+    }
+
+    handle {
+        root * ./templates
+        try_files {path} /index.html
+        file_server
+    }
+}

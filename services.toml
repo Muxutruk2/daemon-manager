@@ -1,0 +1,17 @@
+[service.nm]
+service_name = "NetworkManager.service"
+friendly_name = "Network manager"
+
+[service.home-manager]
+service_name = "home-manager-muxutruk.service"
+friendly_name = "Home Manager"
+
+[service.power-profiles]
+service_name = "power-profiles-daemon.service"
+friendly_name = "Power profiles"
+
+[service.display-manager]
+service_name = "display-manager.service"
+friendly_name = "Display Manager (sddm)"
+
+show_logs = true

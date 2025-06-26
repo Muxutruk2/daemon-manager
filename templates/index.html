@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    >
+    <meta name="theme-color" content="#1e1e2e">
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="ie=edge"
+    >
+    <title>Daemon Manager</title>
+    <link
+      rel="stylesheet"
+      href="/static/css/styles.css"
+    >
+    <link
+      rel="stylesheet"
+      href="/static/css/reset.css"
+    >
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.5/dist/htmx.min.js@2.0.5" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/idiomorph@0.7.3" integrity="sha384-JcorokHTL/m+D6ZHe2+yFVQopVwZ+91GxAPDyEZ6/A/OEPGEx1+MeNSe2OGvoRS9" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/idiomorph@0.7.3/dist/idiomorph-ext.min.js" integrity="sha384-szktAZju9fwY15dZ6D2FKFN4eZoltuXiHStNDJWK9+FARrxJtquql828JzikODob" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <section class="bg1">
+      <h1>Main Page</h1>
+      <article>
+        <div hx-get="/api/services" hx-trigger="load, every 5s" hx-swap="morph:innerHTML">
+          <img class="htmx-indicator" src="/static/media/spinner.svg">
+        </div>
+      </article>
+    </section>
+    <section class="bg2" hx-ext="morph">
+      <h2>Detailed view</h2>
+      <div id="detailed-view">
+        <img class="htmx-indicator" src="/static/media/spinner.svg">
+      </div>
+    </section>
+  </body>
+</html>

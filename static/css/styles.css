@@ -1,0 +1,150 @@
+:root {
+  --background1: #1e1e2e; /* Base */
+  --background2: #181825; /* Mantle */
+  --background3: #11111b; /* Crust */
+
+  --font-color: #cdd6f4; /* Text */
+  --muted-font: #a6adc8; /* Subtext1 */
+  --muted-font-alt: #bac2de; /* Subtext0 */
+
+  --accent-color: #89b4fa; /* Blue */
+  --accent-alt: #f38ba8; /* Red */
+  --highlight: #f9e2af; /* Yellow */
+  --success: #a6e3a1; /* Green */
+  --warning: #fab387; /* Peach */
+  --info: #89dceb; /* Sky */
+
+  --border-color: #313244; /* Surface0 */
+  --surface1: #45475a; /* Surface1 */
+  --surface2: #585b70; /* Surface2 */
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  font-family: "Fira Sans", sans-serif;
+  color: var(--font-color);
+}
+
+.bg1 {
+  background-color: var(--background1);
+}
+
+.bg2 {
+  background-color: var(--background2);
+}
+
+/* Defaults for sections and articles */
+section {
+  padding: 2rem;
+  max-width: 100vw;
+  margin: 0 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-name {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+}
+
+.section-subtitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--accent-color);
+}
+
+article {
+  margin-bottom: 2rem;
+}
+
+article a {
+  color: var(--font-color);
+  transition: all 0.1s;
+}
+
+article a:hover {
+  color: var(--accent-color);
+}
+
+/* Text only article */
+.article {
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.article h3 {
+  margin-bottom: 1rem;
+}
+.article p {
+  margin-bottom: 1rem;
+}
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.service-card:hover {
+  background-color: var(--background1);
+  border: 1px solid var(--accent-color);
+  cursor: pointer;
+}
+
+.service-card-name {
+  font-size: 1.25rem;
+}
+
+.service-card-name:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.service-card-description {
+  font-size: 1rem;
+  margin: 0 1rem 1rem 1rem;
+  color: var(--muted-font);
+}
+
+.fg-green {
+  color: var(--success);
+}
+
+.fg-yellow {
+  color: var(--highlight);
+}
+
+.fg-red {
+  color: var(--accent-alt);
+}
+
+.command-output {
+  max-width: 1000px;
+  max-height: 1000px;
+  overflow-wrap: break-word;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}

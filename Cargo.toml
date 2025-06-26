@@ -1,0 +1,19 @@
+[package]
+name = "daemon-manager"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ansi-to-html = "0.2.2"
+axum = "0.8.4"
+chrono = "0.4.41"
+env_logger = "0.11.8"
+htmlescape = "0.3.1"
+log = "0.4.27"
+minijinja = "2.10.2"
+serde = { version = "1.0.219", features = ["derive"] }
+sysinfo = "0.35.2"
+systemctl = { version = "0.4.0", features = ["serde"] }
+tokio = { version = "1.45.1", features = ["full"] }
+toml = { version = "0.8.23", features = ["preserve_order"] }
+use = "0.0.1-pre.0"
