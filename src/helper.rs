@@ -9,28 +9,6 @@ use sysinfo::System;
 
 use crate::{ServiceConfig, ServiceInfo};
 
-pub fn systemd_show(variable: &str, unit: &str) -> Result<String> {
-    Command::new("systemctl")
-        .arg("show")
-        .arg(unit)
-        .arg("--property")
-        .arg(variable)
-        .arg("--value")
-        .output()
-        .context("Unable to get STDOUT")
-        .and_then(|output| {
-            if output.status.success() {
-                Ok(String::from_utf8(output.stdout)?.trim_end().to_owned())
-            } else {
-                Err(anyhow!(
-                    "systemctl failed (status: {:?}): {}",
-                    output.status,
-                    String::from_utf8_lossy(&output.stderr).trim()
-                ))
-            }
-        })
-}
-
 pub fn systemd_show_parse<T>(variable: &str, unit: &str) -> Result<T>
 where
     T: FromStr,
@@ -96,22 +74,6 @@ pub fn journalctl_html(unit: &str) -> Result<String> {
     ansi_to_html::convert(&raw).context("Unable to convert command output to HTML")
 }
 
-fn systemd_status(unit: &str) -> Result<String> {
-    let output = Command::new("systemctl")
-        .arg("status")
-        .arg(unit)
-        .arg("--lines")
-        .arg("0")
-        .output()
-        .context("Unable to get STDOUT")?;
-
-    if output.status.success() {
-        Ok(String::from_utf8(output.stdout)?.trim().to_string())
-    } else {
-        Err(anyhow!("systemctl exited with status: {:?}", output.status))
-    }
-}
-
 pub fn monotonic_uptime(monotonic_us: u64, boot_time: SystemTime) -> String {
     let event_time = boot_time + Duration::from_micros(monotonic_us);
     let now = SystemTime::now();
@@ -164,9 +126,16 @@ pub fn get_unit_info(unit: &Unit, config: Vec<&ServiceConfig>) -> Result<Service
 
     let pretty_uptime = monotonic_uptime(uptime, boot_time);
 
+    debug!("Unit Name: {}", unit.name);
+
     let unit_config = config
         .iter()
-        .find(|a| a.service_name == unit.name)
+        .find(|a| {
+            a.service_name
+                .rsplit_once(".")
+                .map(|n| n.0 == unit.name)
+                .unwrap()
+        })
         .with_context(|| format!("Unable to get configuration of the service {}", unit.name))?;
 
     Ok(ServiceInfo {
