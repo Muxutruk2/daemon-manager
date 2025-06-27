@@ -11,7 +11,7 @@ chrono = "0.4.41"
 env_logger = "0.11.8"
 htmlescape = "0.3.1"
 log = "0.4.27"
-minijinja = "2.10.2"
+minijinja = { version = "2.10.2", features = ["loader"] }
 serde = { version = "1.0.219", features = ["derive"] }
 sysinfo = "0.35.2"
 systemctl = { version = "0.4.0", features = ["serde"] }
