@@ -40,7 +40,7 @@ pub async fn handle_services(State(state): State<AppState>) -> Response {
         .collect();
 
     let cards_template = env
-        .get_template("cards")
+        .get_template("cards.html")
         .context("Could not load template 'cards'");
 
     match cards_template {
@@ -78,7 +78,7 @@ pub async fn handle_service(
     println!("JOURNAL: {journal:?}");
 
     let template = env
-        .get_template("commands")
+        .get_template("commands.html")
         .map_err(|e| error!("Could not load template 'commands': {e}"));
 
     if template.is_err() {
@@ -88,7 +88,7 @@ pub async fn handle_service(
     let response = template
         .unwrap()
         .render(context! {status, journal })
-        .map_err(|e| error!("Could not render template 'cards': {e}"));
+        .map_err(|e| error!("Could not render template 'commands': {e}"));
 
     if response.is_err() {
         return (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response();
