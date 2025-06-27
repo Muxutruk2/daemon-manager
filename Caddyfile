@@ -14,7 +14,7 @@ route {
     }
 
     handle {
-        root * ./templates
+        root * ./pages
         try_files {path} /index.html
         file_server
     }
