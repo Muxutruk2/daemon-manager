@@ -1,0 +1,41 @@
+
+<div class="services">
+  {% for service in services %}
+  <div
+    class="service-card bg2"
+    hx-get="/api/service/{{ service.config.service_name }}"
+    hx-target="#detailed-view"
+  >
+    <h2 class="service-card-name">{{ service.config.friendly_name }}</h2>
+    {% if service.active %}
+    <p class="service-card-status fg-green">{{ service.status }} (active)</p>
+    {% else %}
+    <p class="service-card-status fg-yellow">{{ service.status }} (inactive)</p>
+    {% endif %}
+
+                {% if service.enabled %}
+    <p class="service-card-enabled fg-green">Enabled</p>
+    {% else %}
+    <p class="service-card-enabled fg-red">Disabled</p>
+    {% endif %}
+
+                {% if service.running %}
+    <p class="service-card-enabled fg-green">Running ({{ service.pid }})</p>
+    <p class="service-card-uptime">
+      Uptime: {{service.uptime}}
+    </p>
+    {% else %}
+    <p class="service-card-enabled fg-red">Stopped ({{ service.pid }})</p>
+    {% if service.status_code == 0 %}
+    <p class="service-card-status-code fg-green">
+      Status Code {{service.status_code}}
+    </p>
+    {% else %}
+    <p class="service-card-status-code fg-red">
+      Status Code {{service.status_code}}
+    </p>
+    {% endif %}
+                {% endif %}
+  </div>
+  {% endfor %}
+</div>

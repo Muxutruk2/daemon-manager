@@ -1,6 +1,7 @@
 mod helper;
 mod routes;
 
+use minijinja::Environment;
 use routes::{handle_service, handle_services};
 
 use std::{
@@ -22,6 +23,7 @@ use systemctl::{SystemCtl, Unit};
 struct AppState {
     config: Arc<Config>,
     systemctl: SystemCtl,
+    template_env: Arc<minijinja::Environment<'static>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -115,11 +117,18 @@ async fn main() {
         std::process::exit(1);
     }
 
+    let mut env = Environment::new();
+
+    env.set_loader(minijinja::path_loader("./templates"));
+
+    let env = Arc::new(env);
+
     let config = Arc::new(config);
 
     let state = AppState {
         config: config.clone(),
         systemctl: systemctl.clone(),
+        template_env: env,
     };
 
     let addr: String = var("DAEMON_MANAGER_ADDR")
@@ -165,4 +174,7 @@ pub struct ServiceDetail {
     status_code: Option<u8>,
     uptime: String,
     r#type: String,
+    unit_file: String,
+    processes: Vec<u32>,
+    configuration: String,
 }

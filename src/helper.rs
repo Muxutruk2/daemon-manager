@@ -2,9 +2,12 @@ use anyhow::{Context, Result, anyhow};
 use std::process::Command;
 use std::str::FromStr;
 use std::time::{Duration, SystemTime};
+use systemctl::{AutoStartStatus, Unit};
 
 use log::{debug, error};
 use sysinfo::System;
+
+use crate::{ServiceConfig, ServiceInfo};
 
 pub fn systemd_show(variable: &str, unit: &str) -> Result<String> {
     Command::new("systemctl")
@@ -146,4 +149,37 @@ pub fn get_boot_time() -> std::time::SystemTime {
     let boot_time_secs = sysinfo::System::boot_time();
 
     std::time::UNIX_EPOCH + std::time::Duration::from_secs(boot_time_secs)
+}
+
+pub fn get_unit_info(unit: &Unit, config: Vec<&ServiceConfig>) -> Result<ServiceInfo> {
+    let main_pid = systemd_show_parse::<u64>("MainPID", &unit.name).ok();
+
+    let status_code = systemd_show_parse::<u8>("StatusErrno", &unit.name)
+        .map_err(|e| error!("StatusCode: {e}"))
+        .ok();
+
+    let uptime: u64 = systemd_show_parse::<u64>("ExecMainStartTimestampMonotonic", &unit.name)?;
+
+    let boot_time = get_boot_time();
+
+    let pretty_uptime = monotonic_uptime(uptime, boot_time);
+
+    let unit_config = config
+        .iter()
+        .find(|a| a.service_name == unit.name)
+        .with_context(|| format!("Unable to get configuration of the service {}", unit.name))?;
+
+    Ok(ServiceInfo {
+        config: (*unit_config).clone(),
+        status: format!("{:?}", unit.state),
+        active: unit.active,
+        enabled: matches!(
+            unit.auto_start,
+            AutoStartStatus::Enabled | AutoStartStatus::EnabledRuntime
+        ),
+        running: main_pid != Some(0),
+        pid: main_pid,
+        status_code,
+        uptime: pretty_uptime,
+    })
 }
