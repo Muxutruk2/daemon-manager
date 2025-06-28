@@ -80,7 +80,7 @@ async fn main() {
                 false
             }
         })
-        .any(|b| b == false);
+        .any(|b| !b);
 
     if incorrect {
         std::process::exit(1);

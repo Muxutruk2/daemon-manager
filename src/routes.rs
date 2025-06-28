@@ -72,7 +72,7 @@ pub async fn handle_service(
         .service
         .iter()
         .find(|a| a.service_name == service)
-        .with_context(|| format!("Unable to find config of unit {}", service))
+        .with_context(|| format!("Unable to find config of unit {service}"))
         .map_err(|e| error!("{e}"));
 
     if config.is_err() {
