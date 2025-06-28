@@ -67,13 +67,35 @@ pub async fn handle_service(
     Path(service): Path<String>,
     State(state): State<AppState>,
 ) -> Response {
+    let config = state
+        .config
+        .service
+        .values()
+        .into_iter()
+        .find(|a| {
+            a.service_name
+                .split_once(".")
+                .map(|a| a.0 == service)
+                .unwrap_or(false)
+        })
+        .with_context(|| format!("Unable to find config of unit {}", service));
+
+    if config.is_err() {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response();
+    }
+
+    let config = config.unwrap();
+
     let env = state.template_env;
 
     let status = systemd_status_html(&service)
         .map_err(|e| error!("{e}"))
         .ok();
 
-    let journal = journalctl_html(&service).map_err(|e| error!("{e}")).ok();
+    let journal = match config.show_logs {
+        true => journalctl_html(&service).map_err(|e| error!("{e}")).ok(),
+        false => None,
+    };
 
     println!("JOURNAL: {journal:?}");
 
