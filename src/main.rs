@@ -51,22 +51,24 @@ async fn main() {
         })
         .unwrap_or("services.toml".into());
 
-    let config_path: PathBuf = PathBuf::from_str(&config_path)
-        .map_err(|e| error!("Could not parse config path {config_path}: {e}"))
-        .expect("Cannot proceed without config");
+    let config_path: PathBuf = PathBuf::from_str(&config_path).unwrap(); // Infallible
 
     let config_str = std::fs::read_to_string(config_path.clone())
         .map_err(|e| {
             error!(
                 "Could not read configuration file '{}': {e}",
                 config_path.display()
-            )
+            );
+            std::process::exit(1);
         })
-        .expect("Cannot proceed without config");
+        .unwrap();
 
     let config: Config = toml::from_str(&config_str)
-        .map_err(|e| error!("Configuration error: {e}"))
-        .expect("Cannot procced without config");
+        .map_err(|e| {
+            error!("Configuration error: {e}");
+            std::process::exit(1)
+        })
+        .unwrap();
 
     let incorrect = config
         .service
