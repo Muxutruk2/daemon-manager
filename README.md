@@ -9,19 +9,19 @@ The service uses caddy to serve static content and Rust for the API. The service
 The toml file has this layout:
 
 ```toml
-[service.nm]
+[[service]]
 service_name = "NetworkManager.service"
 friendly_name = "Network manager"
 
-[service.power-profiles]
+[[service]]
 service_name = "power-profiles-daemon.service"
 friendly_name = "Power profiles"
-show-logs = true
+show_logs = true
 
-[service.display-manager]
+[[service]]
 service_name = "display-manager.service"
 friendly_name = "Display Manager (sddm)"
-show-logs = false
+show_logs = false
 ```
 
 The API uses the systemctl crate and also runs `systemctl` for missing behaviour. In the future this might change to zbus.

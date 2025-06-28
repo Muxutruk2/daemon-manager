@@ -113,7 +113,7 @@ pub fn get_boot_time() -> std::time::SystemTime {
     std::time::UNIX_EPOCH + std::time::Duration::from_secs(boot_time_secs)
 }
 
-pub fn get_unit_info(unit: &Unit, config: Vec<&ServiceConfig>) -> Result<ServiceInfo> {
+pub fn get_unit_info(unit: &Unit, config: &Vec<ServiceConfig>) -> Result<ServiceInfo> {
     let main_pid = systemd_show_parse::<u64>("MainPID", &unit.name).ok();
 
     let status_code = systemd_show_parse::<u8>("StatusErrno", &unit.name)

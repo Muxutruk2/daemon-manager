@@ -9,8 +9,8 @@ use axum::{
 
 use anyhow::Context;
 use log::error;
-use minijinja::{Environment, context};
-use systemctl::{AutoStartStatus, Unit};
+use minijinja::context;
+use systemctl::Unit;
 
 use crate::{AppState, ServiceInfo};
 
@@ -20,7 +20,7 @@ pub async fn handle_services(State(state): State<AppState>) -> Response {
     let units = state
         .config
         .service
-        .values()
+        .iter()
         .filter_map(|s| match state.systemctl.create_unit(&s.service_name) {
             Ok(unit) => Some(unit),
             Err(e) => {
@@ -33,7 +33,7 @@ pub async fn handle_services(State(state): State<AppState>) -> Response {
     let services_info: Vec<ServiceInfo> = units
         .into_iter()
         .filter_map(|unit| {
-            get_unit_info(&unit, state.config.service.values().collect())
+            get_unit_info(&unit, &state.config.service)
                 .map_err(|e| error!("Error geting unit info: {e}"))
                 .ok()
         })
@@ -70,8 +70,7 @@ pub async fn handle_service(
     let config = state
         .config
         .service
-        .values()
-        .into_iter()
+        .iter()
         .find(|a| a.service_name == service)
         .with_context(|| format!("Unable to find config of unit {}", service))
         .map_err(|e| error!("{e}"));

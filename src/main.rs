@@ -5,7 +5,6 @@ use minijinja::Environment;
 use routes::{handle_service, handle_services};
 
 use std::{
-    collections::HashMap,
     env::var,
     net::{Ipv4Addr, SocketAddrV4},
     path::PathBuf,
@@ -29,7 +28,7 @@ struct AppState {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
-    pub service: HashMap<String, ServiceConfig>,
+    pub service: Vec<ServiceConfig>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -37,7 +36,6 @@ pub struct Config {
 pub struct ServiceConfig {
     pub service_name: String,
     pub friendly_name: String,
-    pub description: Option<String>,
 
     #[serde(default)]
     pub show_logs: bool,
@@ -72,7 +70,7 @@ async fn main() {
 
     let incorrect = config
         .service
-        .values()
+        .iter()
         .map(|v| match v.service_name.rsplit_once('.') {
             Some((_, _)) => true,
             None => {
@@ -94,7 +92,7 @@ async fn main() {
 
     let units = config
         .service
-        .values()
+        .iter()
         .filter_map(|s| match systemctl.create_unit(&s.service_name) {
             Ok(unit) => Some(unit),
             Err(e) => {
