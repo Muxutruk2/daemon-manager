@@ -72,13 +72,9 @@ pub async fn handle_service(
         .service
         .values()
         .into_iter()
-        .find(|a| {
-            a.service_name
-                .split_once(".")
-                .map(|a| a.0 == service)
-                .unwrap_or(false)
-        })
-        .with_context(|| format!("Unable to find config of unit {}", service));
+        .find(|a| a.service_name == service)
+        .with_context(|| format!("Unable to find config of unit {}", service))
+        .map_err(|e| error!("{e}"));
 
     if config.is_err() {
         return (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response();
@@ -94,10 +90,8 @@ pub async fn handle_service(
 
     let journal = match config.show_logs {
         true => journalctl_html(&service).map_err(|e| error!("{e}")).ok(),
-        false => None,
+        false => Some(String::new()),
     };
-
-    println!("JOURNAL: {journal:?}");
 
     let template = env
         .get_template("commands.html")
